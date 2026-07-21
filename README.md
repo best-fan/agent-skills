@@ -11,7 +11,7 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 | [frontend-rules-generator](#frontend-rules-generator) | 1.0.0 | 前端规范生成，创建 Claude Rules 文件 |
 | [build-frontend-zip](#build-frontend-zip) | 1.0.0 | 前端项目打包，生成 zip 分发包 |
 | [git-commit](#git-commit) | 1.3.0 | Git 提交，生成规范 commit 消息 |
-| [daily-report](#daily-report) | 1.0.0 | 工作日报，从 Git 提交生成日报 |
+| [daily-report](#daily-report) | 2.0.0 | 工作日报，从 Git 提交归纳为 reportContent 风格日报 |
 
 ---
 
@@ -101,14 +101,14 @@ Git 提交技能，生成符合项目规范的 commit 消息。
 
 ### daily-report
 
-工作日报生成技能，从 Git 提交记录自动生成交互式日报。
+工作日报生成技能，从 Git 提交记录出发，经 AI 归纳生成 reportContent 风格的工作日报，可直接粘贴到 OA 系统。
 
 **核心功能：**
-- 获取 Git 用户信息
+- 获取 Git 用户信息，筛选当日提交记录（含 commit body）
 - 支持今天、昨天、自定义日期统计
-- 按项目 scope 分组提交记录
-- 可选统计信息（提交次数、新增/删除行数）
-- 输出标准化日报格式
+- 按工作主题归纳为「动作+对象」条目，去掉 commit type 前缀
+- 按业务模块标注前缀（`模块-`），跨模块时各自标注
+- 输出序号列表（顿号串联），贴合 reportContent 口语化风格
 
 **使用方式：** `/daily-report`
 

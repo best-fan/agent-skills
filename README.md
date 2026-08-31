@@ -6,7 +6,7 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 
 | 技能 | 版本 | 说明 |
 |------|------|------|
-| [design-analysis](#design-analysis) | 1.26.1 | 设计稿分析，产出 UI 分析清单 |
+| [design-analysis](#design-analysis) | 1.28.0 | 设计稿分析，产出 UI 分析清单 |
 | [frontend-code-review](#frontend-code-review) | 1.2.0 | 前端代码审查，输出结构化报告 |
 | [frontend-rules-generator](#frontend-rules-generator) | 1.0.0 | 前端规范生成，创建 Claude Rules 文件 |
 | [build-frontend-zip](#build-frontend-zip) | 1.0.0 | 前端项目打包，生成 zip 分发包 |

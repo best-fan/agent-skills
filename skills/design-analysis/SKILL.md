@@ -2,8 +2,8 @@
 name: design-analysis
 description: 通用设计稿分析技能。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
 metadata:
-  version: 1.26.1
-  updatedAt: 2026-04-13
+  version: 1.28.0
+  updatedAt: 2026-08-31
 ---
 
 # 设计稿分析

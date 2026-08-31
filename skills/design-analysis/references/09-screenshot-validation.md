@@ -54,7 +54,7 @@ TeamCreate({
 └── verify-NN → 区域N（nodeId: xxx）
 
 每个验证 Agent 使用工具（根据设计稿类型）：
-- .pen 文件: mcp__pencil__get_screenshot + mcp__pencil__batch_get
+- .pen 文件: 优先 `execute` + `Get()` / `TakeScreenshot()`，备选 `Read`
 - Figma: mcp__Framelink_Figma_MCP__get_figma_data
 - MasterGo: mcp__mastergo-magic-mcp__mcp__getDsl
 - 本地图片: Read 工具直接读取图片
@@ -69,13 +69,13 @@ TeamCreate({
 
 ```
 步骤1: 获取区域截图/视觉内容
-       → .pen 文件: mcp__pencil__get_screenshot(filePath, nodeId)
+       → .pen 文件: `execute` + `TakeScreenshot([nodeId])` 或 `Export([nodeId], "png", path)`
        → Figma: mcp__Framelink_Figma_MCP__get_figma_data(fileKey, nodeId)
        → MasterGo: mcp__mastergo-magic-mcp__mcp__getDsl(fileId, layerId)
        → 本地图片: Read(filePath) 直接读取图片
 
 步骤2: 读取区域节点数据
-       → .pen 文件: mcp__pencil__batch_get(filePath, nodeIds, readDepth=4)
+       → .pen 文件: `execute` + `Get(nodeId, { depth: 4 })` 或 `Read` 读取 .pen 文件
        → Figma: mcp__Framelink_Figma_MCP__get_figma_data(fileKey, nodeId)
        → MasterGo: mcp__mastergo-magic-mcp__mcp__getDsl(fileId, layerId)
        → 本地图片: 无节点数据，仅视觉识别

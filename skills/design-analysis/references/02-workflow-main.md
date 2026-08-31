@@ -11,7 +11,7 @@ tags: workflow, layout, extraction, style, verification
 
 | 设计稿类型 | 工具 | 第一步 |
 |-----------|------|--------|
-| `.pen` 文件 | Pencil MCP | `mcp__pencil__open_document` 打开文件 |
+| `.pen` 文件 | Pencil MCP / Read | 优先 `execute` + `Get()`，备选 `Read` 读取 JSON |
 | Figma 链接 | Figma MCP | `mcp__Framelink_Figma_MCP__get_figma_data` 获取数据 |
 | MasterGo 链接 | MasterGo MCP | `mcp__mastergo-magic-mcp__mcp__getDsl` 获取 DSL |
 | 本地图片 | 视觉识别 | 使用模型视觉能力识别 |

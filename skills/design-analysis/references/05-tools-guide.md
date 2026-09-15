@@ -7,7 +7,20 @@ tags: tools, design, pencil, figma, mastergo
 
 # 工具使用指南
 
+## ⚠️ 工具时效性声明（必读）
+
+**本文件中的工具名、参数、API 用法均为参考示例，可能随 MCP 服务版本更新而变化，不作为固定事实。**
+
+- **使用前必须确认当前会话实际可用的工具**：以系统提示中的工具清单（或 ToolSearch 检索结果）为准，禁止假设某工具必然存在
+- **按前缀模式识别工具**：`mcp__pencil__*`（Pencil）、`mcp__Framelink_Figma_MCP__*`（Figma）、`mcp__mastergo-magic-mcp__*`（MasterGo），具体工具名以实际环境为准
+- **参数以工具实际 schema 为准**：调用前查看工具的输入参数定义，与本文描述不一致时按 schema 调整
+- **工具缺失或行为不符时的处理**：改用同类可用工具（如 `execute` 不可用时用 `Read` 读 JSON），不因此中断分析流程
+
+---
+
 ## 设计稿类型与工具选择
+
+> 下表为常见工具参考（**以当前会话实际可用工具为准**，具体名称按前缀模式匹配）。
 
 | 设计稿类型 | 工具 | 第一步操作 |
 |-----------|------|-----------|
@@ -20,19 +33,19 @@ tags: tools, design, pencil, figma, mastergo
 
 ## .pen（Pencil 设计稿）
 
-### 可用工具
+### 常见工具参考（以实际环境为准）
 
 | 工具 | 用途 | 数据返回 |
 |------|------|----------|
 | `mcp__pencil__get_app_state` | 获取 pen.dev 应用状态、当前打开文件、选中节点等基本信息 | ✅ 返回状态和顶层节点 |
 | `mcp__pencil__execute` | **核心工具**：在 pen.dev 上下文中执行 JavaScript，**可通过 Get() 读取节点**，也可修改设计稿 | ⚠️ 返回 "OK"，数据通过 Get()/Print() 获取 |
+| `mcp__pencil__get_style` | 加载视觉风格原型（可配置字体、颜色、图像的参考值） | ✅ 返回风格列表及风格参数 |
+| `mcp__pencil__read_skill` | 读取 pen.dev 画布设计技能文档（SKILL.md 及其引用文件） | ✅ 返回技能文档内容 |
 | `Read` | **备选**：.pen 文件是明文 JSON，当 execute 无法满足时可直接读取 | ✅ 返回完整文件内容 |
 
 ### 核心约束
 
 > **⚠️ Pencil MCP `execute` 工具是主要交互方式**。在 `execute` 的 `input` 中可使用 `Get()` 函数读取节点数据，使用 `Insert()`/`Update()` 等修改设计稿。
->
-> **注意**：`get_style` 和 `read_skill` 工具当前版本不可用。
 
 ### 使用步骤（优先使用 execute）
 
@@ -142,13 +155,11 @@ const penData = Read({ filePath: "path/to/design.pen" });
 - 执行结果通过 `Print()` 输出到响应消息
 - 失败返回错误信息和 `editId`（可用于修复）
 
-**重要**：`get_style` 和 `read_skill` 工具当前版本不可用。
-
 ---
 
 ## Figma 链接
 
-### 可用工具
+### 常见工具参考（以实际环境为准）
 
 | 工具 | 用途 |
 |------|------|
@@ -177,7 +188,7 @@ mcp__Framelink_Figma_MCP__download_figma_images({ fileKey, localPath, nodes })
 
 ## MasterGo 链接
 
-### 可用工具
+### 常见工具参考（以实际环境为准）
 
 | 工具 | 用途 |
 |------|------|
@@ -398,12 +409,10 @@ Get("target", { depth: 2 })
 Get("target", { depth: 4, resolveInstances: true })
 ```
 
-| 设计复杂度 | 推荐 depth | 可能遗漏的风险 |
-|------------|------------|----------------|
-| 简单页面（单层结构） | 2 | 低 |
-| 中等复杂（有嵌套容器） | 3 | 中 - 可能遗漏第二层容器内的内容 |
-| 复杂页面（多层嵌套） | **4+** | **高** - 可能遗漏信息行、嵌套标签 |
-| 含实例组件的页面 | **4+** | **高** - 必须设置 resolveInstances: true |
+| 设计复杂度 | 强制 depth | 遗漏风险 |
+|------------|------------|----------|
+| 所有页面 | **4+（最低 4）** | 深度 1/2/3 会遗漏嵌套内容——SKILL.md 禁止行为明令禁止 |
+| 深层嵌套/实例组件页面 | **5+** | 必须设置 resolveInstances: true |
 
 ---
 
@@ -453,12 +462,10 @@ function traverseNode(node, depth = 0, maxDepth = 4) {
 }
 ```
 
-| 设计复杂度 | 推荐遍历深度 | 可能遗漏的风险 |
-|------------|--------------|----------------|
-| 简单页面（单层结构） | 2 | 低 |
-| 中等复杂（有嵌套容器） | 3 | 中 - 可能遗漏第二层容器内的内容 |
-| 复杂页面（多层嵌套） | **4+** | **高** - 可能遗漏信息行、嵌套标签 |
-| 含实例组件的页面 | **4+** | **高** - 必须展开 ref 组件实例 |
+| 设计复杂度 | 强制遍历深度 | 遗漏风险 |
+|------------|--------------|----------|
+| 所有页面 | **4+（最低 4）** | 深度 1/2/3 会遗漏嵌套内容 |
+| 深层嵌套/实例组件页面 | **5+** | 必须展开 ref 组件实例 |
 
 #### ⚠️ 真实遗漏案例
 
@@ -526,7 +533,7 @@ const col = findNodeById(penData, "checkbox-column-id");
 // 验证规则：
 // 1. name 字段：components/table-column/check-box → 确认是 checkbox 列
 // 2. children 字段：包含 11 个 components/table-cell/checkbox → 确认有 11 行 checkbox
-// 3. enabled 字段：false → 确认列被禁用，前端需设置 disabled
+// 3. enabled 字段：false → 确认列被禁用，不在文档中记录
 ```
 
 #### 组件实例解析规则
@@ -629,7 +636,7 @@ const col = findNodeById(penData, "checkbox-column-id");
 // 验证规则：
 // - name: components/table-column/check-box → 确认是 checkbox 列
 // - children: 包含 N 个 components/table-cell/checkbox → 确认有 N 行
-// - enabled: false → 确认整列禁用（前端需设置 disabled）
+// - enabled: false → 确认整列禁用，不在文档中记录
 // - children[每项].checked: true/false → 确认每行选中状态
 ```
 

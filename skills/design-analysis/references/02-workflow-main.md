@@ -31,7 +31,7 @@ tags: workflow, layout, extraction, style, verification
 **此步骤不可跳过！后续所有元素归属判断都依赖此步骤！**
 
 ```markdown
-## 区域边界验证表（分析阶段必填，写入 memory）
+## 区域边界验证表（分析阶段必填，不输出到最终文档）
 
 | 区域名称 | x | width | 左边界 | 右边界 |
 |----------|---|-------|--------|--------|
@@ -104,7 +104,7 @@ tags: workflow, layout, extraction, style, verification
 - 区域2：数据概览区域（左右布局）
   - 左侧：项目结算总额卡片
   - 右侧：项目营收平衡情况
-``` |
+```
 
 ### 布局 Map 模板
 
@@ -143,24 +143,17 @@ tags: workflow, layout, extraction, style, verification
 
 **必须使用足够的读取深度，否则会遗漏嵌套内容！**
 
-```javascript
-// ✅ 正确：读到 depth 4，展开实例
-batch_get({
-  nodeIds: ["target-node"],
-  readDepth: 4,
-  resolveInstances: true,
-  resolveVariables: true
-})
+| 设计稿类型 / 工具 | 深度参数 | 强制要求 |
+|------------|----------|----------|
+| Pencil：`execute` + `Get()` | `depth` | **4+**，并设 `resolveInstances: true` |
+| Figma：`get_figma_data` | 默认返回完整层级 | 深层嵌套时按节点 ID 逐层下钻 |
+| MasterGo：`getDsl` | 默认返回完整 DSL | 必须递归遍历 INSTANCE 内部（见 `05-tools-guide.md`） |
+| 自定义遍历脚本 | `maxDepth` / `readDepth` | **4+**（❌ 禁止 1 或 2） |
 
-// ❌ 错误：只读到 depth 2，可能遗漏第二层嵌套
-batch_get({ nodeIds: ["target-node"], readDepth: 2 })
-```
-
-| 设计复杂度 | 推荐 readDepth | 说明 |
+| 设计复杂度 | 强制 readDepth | 说明 |
 |------------|----------------|------|
-| 简单页面 | 2 | 单层结构 |
-| 中等复杂 | 3 | 有嵌套容器 |
-| 复杂页面 | 4+ | 多层嵌套、实例组件 |
+| 所有页面 | **4+（最低 4）** | 与 SKILL.md 禁止行为一致：禁止使用 readDepth 1 或 2 |
+| 深层嵌套/实例组件页面 | **5+** | 层级更深时适当加大 |
 
 ### ⚠️ 强制要求：组件状态字段检查
 
@@ -424,7 +417,7 @@ Group 220（基础信息区）
 **禁止凭视觉推断层级！必须使用工具读取实际节点树！**
 
 记录格式：
-```markdown
+````markdown
 #### 层级
 
 ```
@@ -435,7 +428,7 @@ Group 220（基础信息区）
 │   └── 孙节点2 (ID) - 说明
 └── 子节点3 (ID) - 说明
 ```
-```
+````
 
 **层级记录必须包含**：
 - 节点名称
@@ -594,15 +587,13 @@ Group 220（基础信息区）
 |--------|--------|------|------|------|
 | 1 | 重点项目 | XgWpw | 160px | 标签列 |
 | 2 | 项目名称 | UBdSq | 306px | 文字列 |
-
-> **禁用列说明**：Checkbox列、操作列等为禁用状态，不实现。
 ```
 
 ### 强制规则
 
 - [ ] **逐列读取时，必须检查 enabled 字段**
 - [ ] **enabled: false 的列，不在表格列分析中记录**
-- [ ] **禁用列信息在备注中说明即可**
+- [ ] **禁用列不在文档中任何位置出现（包括备注、说明）**
 - [ ] **禁止虚构设计稿中不存在列**（如凭经验添加「类型」「进度」列）
 - [ ] **文档列数 = enabled: true 的列数**
 
@@ -727,14 +718,19 @@ openspec/ui-checklist/{序号}-{模块名}.md
 
 ---
 
-## 清理临时文件
+## 清理临时文件（生成 UI 分析清单后及时执行）
 
-校验通过后，清理分析过程中生成的临时文件：
+**生成 UI 分析清单文档后，立即清理分析过程中产生的临时文件，不要等到流程结束**：
+
+| 项目 | 说明 |
+|------|------|
+| 清理时机 | 第四步「输出 UI 分析清单」完成后**立即执行** |
+| 清理对象 | 分析过程中生成的 DSL JSON、中间数据、脚本输出等临时文件（以实际生成文件为准） |
+| 不受影响 | 后续校验通过 MCP 工具重新获取设计稿数据，不依赖临时文件 |
 
 ```bash
-rm -f openspec/output/analysis-report.md
-rm -f openspec/output/card_titles.json
-rm -f openspec/output/region_details.json
+# 生成 UI 分析清单后及时执行（按实际生成的临时文件替换路径）
+rm -f <分析过程中生成的临时 DSL/JSON/报告文件>
 ```
 
 ---

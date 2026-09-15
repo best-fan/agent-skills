@@ -24,12 +24,18 @@ tags: screenshot, validation, agent-team, cross-check
 
 ### 1. 创建验证团队
 
-```javascript
-// 使用 TeamCreate 创建验证团队
-TeamCreate({
-  team_name: "design-verification",
-  description: "设计稿截图交叉验证团队"
-})
+**使用 `Agent` 工具并行派发验证子代理**（不存在 TeamCreate 工具，禁止使用）：
+
+- 在**同一条消息中**并行发出多个 `Agent` 工具调用（每个区域一个验证代理，并发执行）
+- 代理类型：`Explore`（只读验证）；需要修正文档时由主会话统一修正
+- 代理描述命名：`验证区域1`、`验证区域2`...（即 verify-01 角色）
+
+```
+主会话（Team Lead 角色）
+├── Agent(验证区域1) ── 并行执行
+├── Agent(验证区域2) ── 并行执行
+├── Agent(验证区域3) ── 并行执行
+└── ...（每区域一个）
 ```
 
 ### 2. 分配验证任务
@@ -61,7 +67,7 @@ TeamCreate({
 ```
 
 **⚠️ 注意：区域数量因设计稿而异，根据实际分析结果动态分配！**
-**⚠️ 注意：工具选择因设计稿类型而异，使用对应的 MCP 工具！**
+**⚠️ 注意：工具选择因设计稿类型而异，使用对应的 MCP 工具；上文工具名仅为参考，以当前会话实际可用工具为准（见 `05-tools-guide.md` 工具时效性声明）！**
 
 ### 3. 验证 Agent 执行流程
 
@@ -119,23 +125,22 @@ TeamCreate({
 步骤1: 记录错误发现位置
        → Agent 名称、验证区域、错误类型
 
-步骤2: 发送错误报告给 Team Lead
-       → SendMessage(to: "team-lead", message: "发现错误...")
+步骤2: 发送错误报告给主会话（Team Lead 角色）
+       → 后台验证代理使用 SendMessage(to: "main", message: "发现错误...")
 
-步骤3: Team Lead 决定修正策略
-       → 指定修正 Agent
-       → 通知其他 Agent 等待
+步骤3: 主会话决定修正策略
+       → 主会话执行修正（或派发新的修正代理）
+       → 其他验证代理继续各自区域的验证
 
-步骤4: 修正 Agent 执行异常修正流程
+步骤4: 执行异常修正流程
        → 执行 5 步修正流程（见 08-error-correction.md）
 
 步骤5: 同步更新所有相关文档位置
        → 使用 Grep 搜索错误元素
        → 确认所有提及处均已修正
 
-步骤6: 通知所有验证 Agent 继续验证
-       → SendMessage(to: "team-lead", message: "修正完成，继续验证")
-       → Team Lead 广播通知所有成员
+步骤6: 通知相关验证代理复核
+       → 主会话通过 SendMessage 向该区域验证代理传达「修正完成，请复核」
 ```
 
 ---

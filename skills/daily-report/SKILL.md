@@ -2,13 +2,18 @@
 name: daily-report
 description: 此技能用于生成工作日报。当用户请求日报、工作总结、提交记录汇总，或运行 /daily-report 命令时触发。从 Git 提交记录出发，经 AI 归纳生成 reportContent 风格的序号列表，按业务模块标注前缀，输出可直接粘贴到 OA 系统的纯文本。
 metadata:
-  version: 2.0.0
-  updatedAt: 2026-07-21
+  version: 2.1.0
+  updatedAt: 2026-09-15
 ---
 
 # Daily Report Skill
 
 从 Git 提交记录出发，经 AI 归纳生成 reportContent 风格的工作日报。输出为序号列表，按业务模块标注前缀，可直接粘贴到 OA 系统的 reportContent 字段。
+
+## 核心约定（NON-NEGOTIABLE）
+
+- **只扫描当前用户的提交**：在 Git 仓库中统计提交记录时，必须按当前 Git 用户（name 与 email）过滤，只归纳当前用户自己的提交，绝不把他人的提交混入日报
+- 若目录不是 Git 仓库，则跳过 Git 流程，直接询问用户手动输入工作内容
 
 ## 使用场景
 
@@ -22,12 +27,21 @@ metadata:
 
 ### Step 1: 获取 Git 用户信息
 
-获取当前 Git 用户名和邮箱，用于筛选提交记录。
+确认当前目录是 Git 仓库后，获取当前 Git 用户名和邮箱。二者共同用于筛选**当前用户**的提交记录：
 
 ```bash
 git config user.name
 git config user.email
 ```
+
+若 `user.name` 或 `user.email` 为空，改用以下方式确定作者标识：
+
+```bash
+# 取当前用户最近一次提交的作者信息
+git log -1 --format="%an|%ae"
+```
+
+仍无法确定时，用 AskUserQuestion 让用户手动输入用于筛选的作者名或邮箱。
 
 ### Step 2: 询问统计日期
 
@@ -41,14 +55,20 @@ git config user.email
 
 ### Step 3: 获取提交记录
 
-使用 Git 命令获取指定日期的提交记录（含 commit body，供归纳使用）：
+使用 Git 命令获取指定日期**当前用户**的提交记录（含 commit body，供归纳使用）。
+
+同时按用户名和邮箱过滤（多个 `--author` 为 OR 关系），避免因 author name 与 `git config user.name` 不一致而漏掉自己的提交：
 
 ```bash
-# 获取当天提交记录（含正文 body）
-git log --author="<用户名>" --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%h %s%n%n%b"
+# 只获取当前用户的提交（按 name 和 email 双重匹配，含正文 body）
+git log --author="<用户名>" --author="<邮箱>" --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%h %an | %s%n%b"
 ```
 
-若当天无提交记录，进入「兜底处理」流程。
+注意：
+
+- 必须带 `--author` 过滤，禁止统计全仓库所有人的提交
+- 输出中包含作者名 `%an`，用于最终核对所有条目均属当前用户
+- 若筛选结果为空，进入「兜底处理」流程，先排查是否为作者名不匹配
 
 ### Step 4: 推断并确认业务模块
 
@@ -120,14 +140,23 @@ git log --author="<用户名>" --since="<日期> 00:00:00" --until="<日期> 23:
 
 ## 兜底处理
 
-- **当天无提交**：提示用户"当天无 Git 提交记录"，用 AskUserQuestion 询问是否手动输入工作内容
+按作者筛选后无提交时，先运行一次不带 `--author` 的查询区分「没提交」与「没匹配上」：
+
+```bash
+# 查看当天仓库内所有人的提交作者分布
+git log --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%an <%ae>" | sort | uniq -c
+```
+
+- **当天仓库无任何提交**：提示用户"当天无 Git 提交记录"，用 AskUserQuestion 询问是否手动输入工作内容
+- **当天有他人提交、但按当前用户筛选为 0 条**：提示"当天仓库有 N 条他人提交、你的提交为 0 条"，可能为作者名不匹配，用 AskUserQuestion 让用户确认作者标识（或从上面的作者分布中选择），再重新筛选；确认后仍无提交则视为当天无提交
 - **提交仅 1-2 条**：直接逐条输出，不过度归纳
 - **用户需要统计信息**：默认不输出统计行；若用户明确要求，在序号列表后追加可选附注（如 `（共 X 次提交）`）
 
 ## 技术要点
 
-- 使用 `git config user.name` 获取用户名
-- 使用 `--format="%h %s%n%n%b"` 获取含 body 的完整提交信息，支撑 AI 归纳
+- **必须用 `--author` 过滤为当前用户的提交**（name 与 email 双重匹配），禁止扫描全仓库所有提交
+- 使用 `git config user.name` / `git config user.email` 获取当前用户标识，为空时回退到 `git log -1 --format="%an|%ae"`
+- 使用 `--format="%h %an | %s%n%b"` 获取含作者与 body 的完整提交信息，支撑核对与归纳
 - 日期格式统一为 YYYY-MM-DD
 - 模块前缀必须经用户确认，不擅自假定
 

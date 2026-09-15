@@ -2,8 +2,8 @@
 name: design-analysis
 description: 通用设计稿分析技能。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
 metadata:
-  version: 1.28.0
-  updatedAt: 2026-08-31
+  version: 1.29.0
+  updatedAt: 2026-09-15
 ---
 
 # 设计稿分析
@@ -80,6 +80,7 @@ metadata:
    - 每个子元素验证 x 坐标是否在区域边界内
 3. **样式规范汇总** → `02-workflow-main.md`
 4. **输出 UI 分析清单** → `03-output-template.md`
+   - ⚠️ 生成后**及时清理临时文件**（详见 `02-workflow-main.md`「清理临时文件」章节）
 5. **执行校验** → `04-verification.md`
 6. **截图交叉验证** → `09-screenshot-validation.md`
 
@@ -97,7 +98,7 @@ metadata:
 
 ## 强制执行机制
 
-详见 `04-verification.md` 获取完整校验清单（校验零到校验二十六）。
+详见 `04-verification.md` 获取完整校验清单（校验零到校验二十七）。
 
 ### 关键校验项
 
@@ -111,6 +112,7 @@ metadata:
 | 校验二十 | 子元素坐标归属校验 | 元素坐标不在归属区域内 |
 | 校验二十五 | 区域边界验证表必填校验 | 第一步未记录区域边界值 |
 | 校验二十六 | 异常修正完整性校验 | 发现异常后只改一处 |
+| 校验二十七 | 头部信息完整性校验 | 遗漏模型名称、设计稿来源 |
 
 ---
 
@@ -128,7 +130,7 @@ metadata:
 |------|------|
 | `02-workflow-main.md` | 完整工作流程（第一步到第五步） |
 | `03-output-template.md` | UI 分析清单文档模板 |
-| `04-verification.md` | 校验清单（校验零到校验二十六） |
+| `04-verification.md` | 校验清单（校验零到校验二十七） |
 
 ### 工具指南
 

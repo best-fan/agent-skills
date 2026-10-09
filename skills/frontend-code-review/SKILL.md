@@ -1,9 +1,9 @@
 ---
 name: frontend-code-review
-description: 此技能用于前端代码审查。当用户请求代码审查、运行 /frontend-code-review 命令、提交前检查代码、或进行 npm 安全审计时触发。审查代码质量、类型安全、Vue 最佳实践、样式规范、npm 包安全，输出结构化审查报告。
+description: 前端代码审查技能（v1.2.1）。当用户请求代码审查、运行 /frontend-code-review 命令、提交前检查代码、或进行 npm 安全审计时触发。审查代码质量、类型安全、Vue 最佳实践、样式规范、npm 包安全，输出结构化审查报告。
 metadata:
-  version: 1.2.0
-  updatedAt: 2026-03-26
+  version: 1.2.1
+  updatedAt: 2026-10-09
 ---
 # 前端代码审查
 
@@ -59,15 +59,30 @@ metadata:
 | 指定目录/文件 | 用户指定具体路径 | 执行步骤 2-5 |
 | 变更文件 | 审查 git 变更文件 | 执行步骤 2-5 |
 
+**变更文件的获取方式**（选择「变更文件」时）：
+
+```bash
+# 已跟踪文件的未提交变更（暂存 + 未暂存）
+git diff --name-only HEAD
+
+# 未跟踪的新文件
+git ls-files --others --exclude-standard
+
+# 仅审查暂存区（提交前检查）
+git diff --cached --name-only
+```
+
+按用户场景选取（默认未提交变更 + 未跟踪文件），合并去重后作为审查文件列表。
+
 ---
 
 ### 步骤 2：运行静态检查
 
-读取 `references/review-checklist.md`，然后运行：
+读取 `references/review-checklist.md`。先读取 `frontend/package.json` 的 `scripts`，确认静态检查命令是否存在及其实际名称（可能是 `typecheck`、`tsc`、`lint:eslint` 等变体，以实际 scripts 为准，禁止臆造命令），然后运行：
 
 ```bash
-pnpm lint           # ESLint 检查
-pnpm type-check     # TypeScript 类型检查
+pnpm lint           # ESLint 检查（实际命令以 package.json scripts 为准）
+pnpm type-check     # TypeScript 类型检查（实际命令以 package.json scripts 为准）
 ```
 
 **错误处理**：
@@ -92,6 +107,8 @@ pnpm type-check     # TypeScript 类型检查
 读取 `references/npm-security-check.md`，然后运行：
 
 ```bash
+cd frontend
+
 pnpm audit --registry https://registry.npmjs.org/ --json
 pnpm outdated
 pnpm licenses list
@@ -103,6 +120,7 @@ pnpm licenses list
 | 网络超时 | 重试一次，仍失败则报告中标注「网络错误」 |
 | registry 不可达 | 报告中标注「无法连接 npm registry」 |
 | JSON 解析失败 | 使用非 JSON 格式重试 |
+| 非零退出码 | `pnpm audit` 发现漏洞、`pnpm outdated` 发现过时依赖时退出码非 0，属正常「有发现」，解析输出而非视为失败 |
 
 ---
 
@@ -124,7 +142,7 @@ pnpm licenses list
 
 #### 报告存储
 
-- 存储位置：`reports/`
+- 存储位置：仓库根目录的 `reports/`（不存在时已在步骤 1 询问用户是否创建）
 - 命名格式：`frontend-code-review-{YYYYMMDD}-{HHMMSS}.md`
 
 ---
@@ -164,7 +182,7 @@ pnpm licenses list
 
 | 文件 | 用途 | 读取时机 |
 |------|------|---------|
-| `references/review-checklist.md` | 审查清单 | 步骤 2 |
+| `references/review-checklist.md` | 审查清单 | 步骤 2-3 |
 | `references/severity-rules.md` | 严重等级规则 | 步骤 5 |
 | `references/npm-security-check.md` | npm 安全检查规则 | 步骤 4 |
 | `references/report-template.md` | 报告模板 | 步骤 5 |

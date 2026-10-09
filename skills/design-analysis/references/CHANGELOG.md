@@ -5,6 +5,34 @@ All notable changes to the design-analysis skill will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.30.0] - 2026-10-09
+
+### Added
+
+- **新增 `references/10-multi-agent.md` 多 Agent 协作机制**：分析过程与验证过程必要时启用多 agent / 子代理并行执行
+  - **启用判定**：区域 ≥ 5 / 表格列 ≥ 8 / 图表 ≥ 3 / INSTANCE 嵌套 ≥ 4 层 / 异常区域 ≥ 2 / 上下文占用 > 60%，满足任一必须启用；简单设计稿禁止启用。判定结果留痕（判定表）
+  - **角色定义**：Team Lead（主会话，唯一文档写入者）、analyze-NN（区域分析）、verify-NN（校验/截图验证）、recheck-NN（修正复核）；Agent 工具并行派发约定与 `09` 一致（无 TeamCreate）
+  - **分析阶段分派**：第一步布局 Map + 边界表必须主会话做；第二步区域提取按区域并行分派；含任务分派表与代理 prompt 模板
+  - **验证阶段分组**：校验零到二十七按数据依赖分 A~G 七组并行执行，含分组调整规则
+  - **修正复核闭环**：异常清单回传 → Team Lead 统一修正（08 五步流程）→ recheck-NN 复核，禁止自我复核
+  - **禁止行为**：禁止子代理并发写文档、凭转述摘要分析、自行编号区域、DSL 原文全量塞 prompt 等
+- **`SKILL.md`**：步骤概览第 1/2/5 步增加多 agent 融合点提示；强制流程表与快速参考加入 `10-multi-agent.md`；grep 搜索模式新增多 agent 关键词；版本升至 1.30.0
+- **`02-workflow-main.md`**：第一步末尾新增「布局 Map 完成后：多 Agent 启用判定」章节；第二步开头新增执行方式说明（单会话 or 并行分派）；搜索关键词补充
+- **`04-verification.md`**：执行时机后新增「校验组并行」章节（A~G 分组表 + 多 agent 校验强制约束）；搜索关键词补充
+
+### Purpose
+
+**分析与验证过程引入多 agent / 子代理并行机制，提升大型复杂设计稿的分析速度与准确性**
+
+| 场景 | 之前 | 之后 |
+|------|------|------|
+| 大型设计稿分析 | 单会话串行逐区域提取，上下文易溢出、遗漏率高 | 满足条件即按区域并行分派 analyze-NN，主会话合并 |
+| 校验执行 | 28 项校验单会话串行 | 分 A~G 七组并行派发 verify-NN |
+| 修正复核 | 修正后自我复核，存在盲区 | 强制 recheck-NN 独立复核闭环 |
+| 简单设计稿 | — | 判定不满足条件禁止启用，避免浪费 |
+
+---
+
 ## [1.29.0] - 2026-09-15
 
 ### Added

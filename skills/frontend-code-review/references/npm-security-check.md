@@ -117,6 +117,15 @@ pnpm audit --json 2>&1
 
 ## 常见问题处理
 
+### 非零退出码
+
+`pnpm audit` 与 `pnpm outdated` 在「有发现」时退出码非 0，属正常结果而非命令失败：
+
+- `pnpm audit`：存在漏洞（critical/high）时退出码非 0
+- `pnpm outdated`：存在过时依赖时退出码为 1
+
+此时直接解析输出内容生成报告；仅当输出为空或无法解析出有效数据时，才视为执行失败。
+
 ### pnpm audit 仍失败
 
 如果指定官方 registry 后仍失败：

@@ -1,6 +1,6 @@
 ---
 name: daily-report
-description: 此技能用于生成工作日报。当用户请求日报、工作总结、提交记录汇总，或运行 /daily-report 命令时触发。从 Git 提交记录出发，经 AI 归纳生成 reportContent 风格的序号列表，按业务模块标注前缀，输出可直接粘贴到 OA 系统的纯文本。
+description: 工作日报生成技能（v2.1.0）。当用户请求日报、工作总结、提交记录汇总，或运行 /daily-report 命令时触发。从 Git 提交记录出发，经 AI 归纳生成 reportContent 风格的序号列表，按业务模块标注前缀，输出可直接粘贴到 OA 系统的纯文本。
 metadata:
   version: 2.1.0
   updatedAt: 2026-09-15
@@ -34,14 +34,14 @@ git config user.name
 git config user.email
 ```
 
-若 `user.name` 或 `user.email` 为空，改用以下方式确定作者标识：
+若 `user.name` 或 `user.email` 仅一项为空，用已知的一项过滤，从当前用户最近一次提交中补全另一项（禁止用不带 `--author` 的 `git log -1`，那会取到仓库最新提交、可能是他人的身份）：
 
 ```bash
-# 取当前用户最近一次提交的作者信息
-git log -1 --format="%an|%ae"
+# 以邮箱已知为例，取当前用户最近一次提交的作者信息
+git log -1 --author="<邮箱>" --format="%an|%ae"
 ```
 
-仍无法确定时，用 AskUserQuestion 让用户手动输入用于筛选的作者名或邮箱。
+两项均为空时无法自动定位当前用户身份，直接用 AskUserQuestion 让用户手动输入用于筛选的作者名或邮箱。
 
 ### Step 2: 询问统计日期
 
@@ -60,13 +60,14 @@ git log -1 --format="%an|%ae"
 同时按用户名和邮箱过滤（多个 `--author` 为 OR 关系），避免因 author name 与 `git config user.name` 不一致而漏掉自己的提交：
 
 ```bash
-# 只获取当前用户的提交（按 name 和 email 双重匹配，含正文 body）
-git log --author="<用户名>" --author="<邮箱>" --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%h %an | %s%n%b"
+# 只获取当前用户的提交（按 name 和 email 双重匹配，条目间以 --- 分隔）
+git log --author="<用户名>" --author="<邮箱>" --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%h %an | %s%n%b%n---"
 ```
 
 注意：
 
 - 必须带 `--author` 过滤，禁止统计全仓库所有人的提交
+- **只把非空的标识传入 `--author`**：`--author=""` 为空正则、等于不过滤，会把他人提交全部混入；name 与 email 均为空时不得执行本命令，先回到 Step 1 向用户确认作者标识
 - 输出中包含作者名 `%an`，用于最终核对所有条目均属当前用户
 - 若筛选结果为空，进入「兜底处理」流程，先排查是否为作者名不匹配
 
@@ -154,9 +155,9 @@ git log --since="<日期> 00:00:00" --until="<日期> 23:59:59" --format="%an <%
 
 ## 技术要点
 
-- **必须用 `--author` 过滤为当前用户的提交**（name 与 email 双重匹配），禁止扫描全仓库所有提交
-- 使用 `git config user.name` / `git config user.email` 获取当前用户标识，为空时回退到 `git log -1 --format="%an|%ae"`
-- 使用 `--format="%h %an | %s%n%b"` 获取含作者与 body 的完整提交信息，支撑核对与归纳
+- **必须用 `--author` 过滤为当前用户的提交**（name 与 email 双重匹配），禁止扫描全仓库所有提交；`--author` 只接受非空值，空字符串等于不过滤
+- 使用 `git config user.name` / `git config user.email` 获取当前用户标识；仅一项为空时，用已知项作 `--author` 取 `git log -1 --format="%an|%ae"` 补全，两项皆空时直接询问用户
+- 使用 `--format="%h %an | %s%n%b%n---"` 获取含作者与 body 的完整提交信息，条目间以 `---` 分隔，支撑核对与归纳
 - 日期格式统一为 YYYY-MM-DD
 - 模块前缀必须经用户确认，不擅自假定
 

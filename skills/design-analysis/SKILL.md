@@ -1,9 +1,9 @@
 ---
 name: design-analysis
-description: 通用设计稿分析技能。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
+description: 通用设计稿分析技能（v1.30.0，支持多 Agent 并行分析与验证）。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
 metadata:
-  version: 1.29.0
-  updatedAt: 2026-09-15
+  version: 1.30.1
+  updatedAt: 2026-10-09
 ---
 
 # 设计稿分析
@@ -74,15 +74,19 @@ metadata:
 1. **建立布局 Map** → `02-workflow-main.md`
    - ⚠️ 🔴 记录每个区域的边界值（左边界、右边界）
    - 详见：`07-boundary-validation.md`
+   - 完成后执行**多 Agent 启用判定** → `10-multi-agent.md`
 2. **区域与元素提取** → `02-workflow-main.md`
    - readDepth: 4+
    - 检查 enabled/visible 状态字段
    - 每个子元素验证 x 坐标是否在区域边界内
+   - ⚡ 满足启用条件时，按区域并行分派 `analyze-NN` 子代理 → `10-multi-agent.md`
 3. **样式规范汇总** → `02-workflow-main.md`
 4. **输出 UI 分析清单** → `03-output-template.md`
    - ⚠️ 生成后**及时清理临时文件**（详见 `02-workflow-main.md`「清理临时文件」章节）
 5. **执行校验** → `04-verification.md`
+   - ⚡ 满足启用条件时，按校验组并行分派 `verify-NN` 子代理 → `10-multi-agent.md`
 6. **截图交叉验证** → `09-screenshot-validation.md`
+   - Agent Team 模式按区域并行验证
 
 ---
 
@@ -93,6 +97,7 @@ metadata:
 | 区域边界验证 | `07-boundary-validation.md` | 建立布局 Map 时立即执行 |
 | 异常修正流程 | `08-error-correction.md` | 发现错误时执行 5 步修正 |
 | 截图交叉验证 | `09-screenshot-validation.md` | 生成文档后执行 Agent Team 验证 |
+| 多 Agent 协作 | `10-multi-agent.md` | 分析/验证过程必要时启用子代理并行执行 |
 
 ---
 
@@ -145,6 +150,7 @@ metadata:
 | `07-boundary-validation.md` | 区域边界验证流程 |
 | `08-error-correction.md` | 异常修正强制流程 |
 | `09-screenshot-validation.md` | 截图交叉验证流程 |
+| `10-multi-agent.md` | 多 Agent 协作机制（启用判定、角色分工、分析/验证阶段分派） |
 
 ### 实现建议
 
@@ -188,4 +194,7 @@ grep -n "异常修正\|修正流程" references/08-error-correction.md
 
 # 截图验证
 grep -n "截图验证\|Agent Team" references/09-screenshot-validation.md
+
+# 多 Agent 协作
+grep -n "启用判定\|Team Lead\|analyze-\|verify-\|recheck-" references/10-multi-agent.md
 ```

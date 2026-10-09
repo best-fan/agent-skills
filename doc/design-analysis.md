@@ -40,7 +40,7 @@
 
 > **规范写得再清楚，如果执行者没有建立强制执行机制，就会被绕过。**
 
-**必须遵守 `../skills/design-analysis/references/04-verification.md` 中的校验清单（校验零到校验二十六）。**
+**必须遵守 `../skills/design-analysis/references/04-verification.md` 中的校验清单（校验零到校验二十七）。**
 
 关键禁止行为：
 - ❌ 凭经验推断图表类型 → ✅ 读取节点 name 字段确认实际类型
@@ -108,7 +108,7 @@
 4. **输出 UI 分析清单** - **必须严格按照模板输出文档**
    - 模板路径：`../skills/design-analysis/references/03-output-template.md`
    - **生成后必须执行校验**：详见 `../skills/design-analysis/references/04-verification.md`
-   - 校验零到校验二十六逐项执行，不通过必须修正后再继续
+   - 校验零到校验二十七逐项执行，不通过必须修正后再继续
 
 5. **区域检查与对比完善** - 按模块区域逐一检查对比
    - 详见 `../skills/design-analysis/references/02-workflow-main.md`
@@ -142,12 +142,13 @@
 ## 快速参考
 
 ### ⚠️ 强制执行机制
-- `../skills/design-analysis/references/04-verification.md` - 校验清单（校验零到校验二十六）
+- `../skills/design-analysis/references/04-verification.md` - 校验清单（校验零到校验二十七）
 
 ### 强制流程
 - `../skills/design-analysis/references/07-boundary-validation.md` - 区域边界验证流程
 - `../skills/design-analysis/references/08-error-correction.md` - 异常修正强制流程
 - `../skills/design-analysis/references/09-screenshot-validation.md` - 截图交叉验证流程
+- `../skills/design-analysis/references/10-multi-agent.md` - 多 Agent 协作机制（启用判定、角色分工、分析/验证阶段分派）
 
 ### Analysis Rules
 - `../skills/design-analysis/references/01-analysis-basics.md` - 分析顺序、四类重中之重、常见遗漏检查点
@@ -174,5 +175,5 @@
 
 ## 版本信息
 
-- 当前版本：1.29.0
-- 更新日期：2026-09-15
+- 当前版本：1.30.1
+- 更新日期：2026-10-09

@@ -301,12 +301,15 @@ Scope 应对应变更的主要目录或模块：
 
 ```
 skills/git-commit/
-└── SKILL.md              # 技能入口定义
+├── SKILL.md                        # 技能入口定义
+└── references/
+    ├── commit-conventions.md       # Commit 类型定义、Scope 规范、消息写作规范
+    └── git-constraints.md          # Git 操作规范、文件过滤规则、冲突处理
 ```
 
 ---
 
 ## 版本信息
 
-- 当前版本：1.3.0
+- 当前版本：1.4.0
 - 更新日期：2026-04-14

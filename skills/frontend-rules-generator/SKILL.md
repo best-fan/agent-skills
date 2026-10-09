@@ -1,6 +1,9 @@
 ---
 name: frontend-rules-generator
-description: 分析前端项目代码结构和模式，生成 `.claude/rules` 开发规范文件。适用于 Vue/React 前端项目，根据项目实际代码提取命名约定、文件组织、代码模板等规范。自动识别项目类型，生成对应框架的组件规范。
+description: 前端 Rules 生成技能（v1.0.0）。分析前端项目代码结构和模式，生成 `.claude/rules` 开发规范文件。适用于 Vue/React 前端项目，根据项目实际代码提取命名约定、文件组织、代码模板等规范。自动识别项目类型，生成对应框架的组件规范。
+metadata:
+  version: 1.0.0
+  updatedAt: 2026-10-09
 ---
 
 # 前端 Rules 生成器

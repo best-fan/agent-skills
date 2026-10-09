@@ -1,6 +1,6 @@
 ---
 name: design-analysis
-description: 通用设计稿分析技能（v1.30.0，支持多 Agent 并行分析与验证）。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
+description: 通用设计稿分析技能（v1.30.1，支持多 Agent 并行分析与验证）。分析设计稿（.pen、Figma、MasterGo、本地图片）并产出 UI 分析清单供开发实现或验收对照时，使用此技能。
 metadata:
   version: 1.30.1
   updatedAt: 2026-10-09

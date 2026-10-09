@@ -1,6 +1,6 @@
 ---
 name: build-frontend-zip
-description: 此技能用于前端项目打包。从 package.json 中读取构建命令，经用户确认后执行构建，然后将 dist 目录打包为 zip 格式。当用户请求打包、构建并压缩、或需要分发构建产物时触发。
+description: 前端项目打包技能（v1.1.0）。此技能用于前端项目打包。从 package.json 中读取构建命令，经用户确认后执行构建，然后将 dist 目录打包为 zip 格式。当用户请求打包、构建并压缩、或需要分发构建产物时触发。
 metadata:
   version: 1.1.0
   updatedAt: 2026-10-09

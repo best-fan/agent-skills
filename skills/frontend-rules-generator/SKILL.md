@@ -1,9 +1,9 @@
 ---
 name: frontend-rules-generator
-description: 前端 Rules 生成技能（v1.0.0）。分析前端项目代码结构和模式，生成 `.claude/rules` 开发规范文件。适用于 Vue/React 前端项目，根据项目实际代码提取命名约定、文件组织、代码模板等规范。自动识别项目类型，生成对应框架的组件规范。
+description: 前端 Rules 生成技能（v1.1.0）。分析前端项目代码结构和模式，生成 `.claude/rules` 开发规范文件。适用于 Vue/React 前端项目，根据项目实际代码提取命名约定、文件组织、代码模板等规范。自动识别项目类型，生成组件规范及页面、弹窗、布局使用规范。
 metadata:
-  version: 1.0.0
-  updatedAt: 2026-10-09
+  version: 1.1.0
+  updatedAt: 2026-10-15
 ---
 
 # 前端 Rules 生成器
@@ -80,7 +80,7 @@ ls src/**/*.tsx   # React 项目特征（.tsx/.jsx）
 | `composables.md` | `src/composables/**/*.ts` | Vue Composables 规范 |
 | `router.md` | `src/router/*.ts` | Vue Router 配置规范 |
 | `style.md` | `src/**/*.scss` / `*.vue` | 样式规范 |
-| `page.md` | `src/pages/**/*.vue` | 页面组件规范（可选） |
+| `page-dialog-layout.md` | `src/pages/**/*.vue` / `src/layout/**/*` / Dialog·Modal 组件 | 页面、弹窗、布局使用规范 |
 | `code-quality.md` | `src/**/*.ts` / `*.vue` | 通用代码质量规范 |
 
 ### React 项目
@@ -95,7 +95,7 @@ ls src/**/*.tsx   # React 项目特征（.tsx/.jsx）
 | `hooks.md` | `src/hooks/**/*.ts` | React Hooks 规范 |
 | `router.md` | `src/router/*.ts` | React Router 配置规范 |
 | `style.md` | `src/**/*.css` / `*.scss` | 样式规范（CSS Modules / Tailwind） |
-| `page.md` | `src/pages/**/*.tsx` | 页面组件规范（可选） |
+| `page-dialog-layout.md` | `src/pages/**/*.tsx` / `src/layout/**/*` / Dialog·Modal 组件 | 页面、弹窗、布局使用规范 |
 | `code-quality.md` | `src/**/*.ts` / `*.tsx` | 通用代码质量规范 |
 
 ## 生成流程
@@ -150,6 +150,7 @@ ls src/pages/            # 页面（或 views）
 
 - Vue 项目：参考 `references/vue-component.md` 填充 `vue-component.md`
 - React 项目：参考 `references/react-component.md` 填充 `react-component.md`
+- 页面/弹窗/布局规范：参考 `references/page-dialog-layout.md` 填充 `page-dialog-layout.md`（生成前必须完成模板末尾「生成时提取项目信息的检查点」）
 
 其他模块规范根据实际代码模式生成。
 
@@ -193,7 +194,7 @@ ls src/pages/            # 页面（或 views）
 
 ```
 问题：需要生成哪些模块的规范？
-选项：全部模块 / 仅组件 / 仅公共模块（services/utils/types） / 自定义选择
+选项：全部模块 / 仅组件 / 组件 + 页面弹窗布局 / 仅公共模块（services/utils/types） / 自定义选择
 ```
 
 ### 4. 已有文件处理
@@ -221,6 +222,7 @@ ls src/pages/            # 页面（或 views）
 | `rule-template.md` | Rules 文件通用模板结构 |
 | `vue-component.md` | Vue 组件规范模板（含 Composition API / Options API） |
 | `react-component.md` | React 组件规范模板（含 Hooks / 函数组件） |
+| `page-dialog-layout.md` | 页面、弹窗、布局使用规范模板（含先查后建流程、状态归属约束） |
 
 ## 输出规范
 

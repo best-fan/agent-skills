@@ -73,6 +73,7 @@ paths:
 | `type.md` | `src/types/**/*.ts` | TypeScript 类型定义规范 |
 | `router.md` | `src/router/*.ts` | Vue Router 配置规范 |
 | `style.md` | `src/**/*.scss` | 样式规范 |
+| `page-dialog-layout.md` | `src/pages/**/*.vue` / `src/layout/**/*` | 页面、弹窗、布局使用规范 |
 | `code-quality.md` | `src/**/*.ts` / `*.vue` | 通用代码质量规范 |
 
 ### React 项目
@@ -87,6 +88,7 @@ paths:
 | `type.md` | `src/types/**/*.ts` | TypeScript 类型定义规范 |
 | `router.md` | `src/router/*.ts` | React Router 配置规范 |
 | `style.md` | `src/**/*.css` | 样式规范（CSS Modules / Tailwind） |
+| `page-dialog-layout.md` | `src/pages/**/*.tsx` / `src/layout/**/*` | 页面、弹窗、布局使用规范 |
 | `code-quality.md` | `src/**/*.ts` / `*.tsx` | 通用代码质量规范 |
 
 ---
@@ -143,6 +145,7 @@ ls src/pages/            # 页面（或 views）
 
 - Vue 项目：参考 `references/vue-component.md`
 - React 项目：参考 `references/react-component.md`
+- 页面/弹窗/布局规范：参考 `references/page-dialog-layout.md`
 
 ### Step 4: 生成后验证
 
@@ -209,6 +212,7 @@ python scripts/generate_rules.py frontend/src --output frontend/.claude/rules
 | `references/rule-template.md` | Rules 文件通用模板结构 |
 | `references/vue-component.md` | Vue 组件规范模板（含 Composition API） |
 | `references/react-component.md` | React 组件规范模板（含 Hooks） |
+| `references/page-dialog-layout.md` | 页面、弹窗、布局使用规范模板 |
 
 ---
 
@@ -247,7 +251,8 @@ skills/frontend-rules-generator/
 ├── references/
 │   ├── rule-template.md         # Rules 文件通用模板
 │   ├── vue-component.md         # Vue 组件规范模板
-│   └── react-component.md       # React 组件规范模板
+│   ├── react-component.md       # React 组件规范模板
+│   └── page-dialog-layout.md    # 页面、弹窗、布局使用规范模板
 └── scripts/
     └── generate_rules.py        # 生成脚本
 ```
@@ -256,5 +261,5 @@ skills/frontend-rules-generator/
 
 ## 版本信息
 
-- 当前版本：1.0.0
-- 更新日期：2026-10-09
+- 当前版本：1.1.0
+- 更新日期：2026-10-15

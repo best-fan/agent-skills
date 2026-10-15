@@ -8,7 +8,7 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 |------|------|------|
 | [design-analysis](#design-analysis) | 1.30.1 | 设计稿分析，产出 UI 分析清单 |
 | [frontend-code-review](#frontend-code-review) | 1.2.1 | 前端代码审查，输出结构化报告 |
-| [frontend-rules-generator](#frontend-rules-generator) | 1.0.0 | 前端规范生成，创建 Claude Rules 文件 |
+| [frontend-rules-generator](#frontend-rules-generator) | 1.1.0 | 前端规范生成，创建 Claude Rules 文件 |
 | [build-frontend-zip](#build-frontend-zip) | 1.1.0 | 前端项目打包，生成 zip 分发包 |
 | [git-commit](#git-commit) | 1.4.0 | Git 提交，生成规范 commit 消息 |
 | [daily-report](#daily-report) | 2.1.0 | 工作日报，从 Git 提交归纳为 reportContent 风格日报 |
@@ -56,6 +56,7 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 - 扫描项目目录结构，识别关键模块
 - 提取代码命名模式和目录组织方式
 - 根据项目实际代码生成开发规范
+- 生成页面、弹窗、布局使用规范约束
 - 生成符合 Claude Code 规范的 rules 文件
 
 **使用方式：** `/frontend-rules-generator`

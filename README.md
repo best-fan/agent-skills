@@ -9,6 +9,7 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 | [design-analysis](#design-analysis) | 1.30.1 | 设计稿分析，产出 UI 分析清单 |
 | [frontend-code-review](#frontend-code-review) | 1.2.1 | 前端代码审查，输出结构化报告 |
 | [frontend-rules-generator](#frontend-rules-generator) | 1.1.0 | 前端规范生成，创建 Claude Rules 文件 |
+| [frontend-eslint-config-fix](#frontend-eslint-config-fix) | 1.0.0 | 修复存量项目 ESLint 配置 |
 | [build-frontend-zip](#build-frontend-zip) | 1.1.0 | 前端项目打包，生成 zip 分发包 |
 | [git-commit](#git-commit) | 1.4.0 | Git 提交，生成规范 commit 消息 |
 | [daily-report](#daily-report) | 2.1.0 | 工作日报，从 Git 提交归纳为 reportContent 风格日报 |
@@ -62,6 +63,30 @@ Claude Code 技能仓库，提供可复用的自动化工作流。
 **使用方式：** `/frontend-rules-generator`
 
 **详细文档：** [doc/frontend-rules-generator.md](doc/frontend-rules-generator.md)
+
+---
+
+### frontend-eslint-config-fix
+
+修复存量项目 ESLint 配置，适用于 Vue/JS 项目。
+
+**核心功能：**
+- 诊断 lint 空转、配置与代码风格冲突
+- 量化基线，按规则和文件统计错误分布
+- 配置对齐存量代码风格（非代码适配配置）
+- 处理 globals、ignore、质量规则降级
+- 验证所有消费方（lintOnSave/CI/发版脚本）
+- 支持 Monorepo 多包配置同步
+
+**使用方式：** `/frontend-eslint-config-fix`
+
+**适用场景：**
+- `npm run lint` 空转或报 "all files matching... are ignored"
+- 存量 Vue/JS 项目需要接入或修复 ESLint
+- `lintOnSave` overlay 或 CI/发版脚本被 ESLint error 阻塞
+- 存量代码与 ESLint 配置风格冲突产生海量报错
+
+**详细文档：** [doc/frontend-eslint-config-fix.md](doc/frontend-eslint-config-fix.md)
 
 ---
 
@@ -139,6 +164,9 @@ npx skills add https://github.com/best-fan/agent-skills/tree/main/skills/git-com
 # 安装 frontend-rules-generator 技能
 npx skills add https://github.com/best-fan/agent-skills/tree/main/skills/frontend-rules-generator
 
+# 安装 frontend-eslint-config-fix 技能
+npx skills add https://github.com/best-fan/agent-skills/tree/main/skills/frontend-eslint-config-fix
+
 # 安装 daily-report 技能
 npx skills add https://github.com/best-fan/agent-skills/tree/main/skills/daily-report
 ```
@@ -162,6 +190,9 @@ cp -r skills/git-commit /path/to/your/project/.claude/skills/
 
 # 安装 frontend-rules-generator 技能
 cp -r skills/frontend-rules-generator /path/to/your/project/.claude/skills/
+
+# 安装 frontend-eslint-config-fix 技能
+cp -r skills/frontend-eslint-config-fix /path/to/your/project/.claude/skills/
 
 # 安装 daily-report 技能
 cp -r skills/daily-report /path/to/your/project/.claude/skills/
@@ -219,6 +250,9 @@ npx skills update https://github.com/best-fan/agent-skills/tree/main/skills/git-
 # 更新 frontend-rules-generator 技能
 npx skills update https://github.com/best-fan/agent-skills/tree/main/skills/frontend-rules-generator
 
+# 更新 frontend-eslint-config-fix 技能
+npx skills update https://github.com/best-fan/agent-skills/tree/main/skills/frontend-eslint-config-fix
+
 # 更新 daily-report 技能
 npx skills update https://github.com/best-fan/agent-skills/tree/main/skills/daily-report
 ```
@@ -242,6 +276,9 @@ cp -r skills/git-commit /path/to/your/project/.claude/skills/
 
 # 更新 frontend-rules-generator 技能
 cp -r skills/frontend-rules-generator /path/to/your/project/.claude/skills/
+
+# 更新 frontend-eslint-config-fix 技能
+cp -r skills/frontend-eslint-config-fix /path/to/your/project/.claude/skills/
 
 # 更新 daily-report 技能
 cp -r skills/daily-report /path/to/your/project/.claude/skills/
@@ -281,6 +318,7 @@ agent-skills/
 │   ├── design-analysis.md       # 设计稿分析技能详细文档
 │   ├── frontend-code-review.md  # 前端代码审查技能详细文档
 │   ├── frontend-rules-generator.md  # 前端规范生成技能详细文档
+│   ├── frontend-eslint-config-fix.md  # ESLint 配置修复技能详细文档
 │   ├── build-frontend-zip.md    # 前端打包技能详细文档
 │   ├── git-commit.md            # Git 提交技能详细文档
 │   └── daily-report.md          # 工作日报技能详细文档
@@ -297,6 +335,9 @@ agent-skills/
     │   ├── SKILL.md             # 技能入口
     │   ├── references/          # 参考文档（模板）
     │   └── scripts/             # 工具脚本
+    ├── frontend-eslint-config-fix/
+    │   ├── SKILL.md             # 技能入口
+    │   └── references/          # 参考文档（诊断命令、规则配置、Monorepo 指南、验收清单）
     ├── build-frontend-zip/
     │   ├── SKILL.md             # 技能入口
     │   └── scripts/             # 工具脚本
